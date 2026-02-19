@@ -14,19 +14,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-          - os: ubuntu-24.04-arm
-            target: aarch64-unknown-linux-gnu
-          - os: macos-latest
-            target: x86_64-apple-darwin
-          - os: macos-latest
-            target: aarch64-apple-darwin
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-          - os: windows-11-arm
-            target: aarch64-pc-windows-msvc
-
+          - os: debian-bookworm
+            target: x86_64-debian-bookworn-linux-gnu
+          - os: debian-trixie
+            target: x86_64-debian-trixie-linux-gnu
+            
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -34,20 +26,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        if: startsWith(matrix.os, 'ubuntu')
+        if: startsWith(matrix.os, 'debian')
         run: |
           sudo apt-get install -y pkg-config libasound2-dev protobuf-compiler
-
-      - name: Install dependencies
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          brew install protobuf
-
-      - name: Install dependencies
-        if: startsWith(matrix.os, 'windows')
-        shell: pwsh
-        run: |
-            choco install protoc -y
 
       - name: Build and upload binary
         uses: taiki-e/upload-rust-binary-action@v1
